@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+import { SyncLoader } from "react-spinners";
 import { useGetAllUsersQuery } from "../../api/usersApiSlice";
 import User from "./User";
 
@@ -18,7 +19,11 @@ export const UsersList = () => {
   let list;
 
   if (isLoading) {
-    list = <div>LOADING...</div>;
+    list = (
+      <div className="flex items-center justify-center min-h-[calc(100vh-12rem)]">
+        <SyncLoader color="#4f46e5" size={30} />
+      </div>
+    );
   }
 
   if (isSuccess) {
