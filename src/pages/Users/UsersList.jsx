@@ -2,6 +2,7 @@
 import { SyncLoader } from "react-spinners";
 import { useGetAllUsersQuery } from "../../api/usersApiSlice";
 import User from "./User";
+import { CreateUserDrawer } from "./CreateUserDrawer";
 
 export const UsersList = () => {
   const {
@@ -39,6 +40,7 @@ export const UsersList = () => {
             <p>Mengelola akses dan data karyawan</p>
           </div>
           {/* Sebuah Drawer create User */}
+          <CreateUserDrawer />
         </div>
 
         <div className="overflow-hidden bg-white rounded-lg shadow-sm">
