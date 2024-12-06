@@ -4,12 +4,10 @@ import { logout, setCredentials } from "./authSlice";
 const authApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation({
-      query: (userCredential) => ({
+      query: (credentials) => ({
         url: "/auth",
         method: "POST",
-        body: {
-          ...userCredential,
-        },
+        body: { ...credentials },
       }),
     }),
     refresh: builder.mutation({

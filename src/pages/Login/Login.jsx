@@ -36,10 +36,10 @@ export const Login = () => {
       dispatch(setCredentials({ accessToken }));
       navigate("/app/dashboard");
     } catch (error) {
-      if (!error.status) {
+      if (!error?.status) {
         console.error("No server response!");
       }
-      toast.error(error?.data?.message, { dismissible: true });
+      toast.error(error.data.message, { dismissible: true });
     }
   };
 
