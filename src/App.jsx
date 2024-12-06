@@ -7,6 +7,7 @@ import MainLayout from "./components/MainLayout";
 import { UsersList } from "./pages/Users/UsersList";
 import { Dashboard } from "./pages/Dashboard/Dashboard";
 import { TicketsList } from "./pages/Tickets/TicketsList";
+import { Login } from "./pages/Login/Login";
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
       {/* path = "/" -> root URL */}
       <Route path="/" element={<Layout />}>
         <Route index element={<Landing />} />
+        <Route path="login" element={<Login />} />
         <Route path="/app" element={<MainLayout />}>
           <Route index element={<Navigate to="/app/dashboard" replace />} />
           <Route path="dashboard">

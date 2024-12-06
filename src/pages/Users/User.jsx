@@ -3,6 +3,7 @@
 import { Switch } from "@headlessui/react";
 import { useGetAllUsersQuery } from "../../api/usersApiSlice";
 import { memo } from "react";
+import { EditUserDrawer } from "./EditUserDrawer";
 
 const User = ({ userId, buttonRef, onStatusChange }) => {
   const { user } = useGetAllUsersQuery("usersList", {
@@ -69,6 +70,7 @@ const User = ({ userId, buttonRef, onStatusChange }) => {
       </td>
       <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
         {/* Edit User Drawer */}
+        <EditUserDrawer selectedUser={user} />
       </td>
     </tr>
   );
