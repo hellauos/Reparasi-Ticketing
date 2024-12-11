@@ -1,17 +1,17 @@
 import useAuth from "@/hooks/useAuth";
-import { useLocation, Navigate, Outlet } from "react-router-dom";
+import { Outlet } from "react-router-dom";
+import { AccessDenied } from "@/pages/Users/AccessDenied";
 
 const RBAC = ({ allowedRoles }) => {
-  const location = useLocation();
-  const { roles } = useAuth();
+    const { roles } = useAuth();
 
-  const app = roles.some((role) => allowedRoles.includes(role)) ? (
-    <Outlet />
-  ) : (
-    <Navigate to="/login" state={{ from: location }} replace />
-  );
+    const app = roles.some((role) => allowedRoles.includes(role)) ? (
+        <Outlet />
+    ) : (
+        <AccessDenied />
+    );
 
-  return app;
+    return app;
 };
 
 export default RBAC;

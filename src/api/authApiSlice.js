@@ -7,7 +7,7 @@ const authApiSlice = apiSlice.injectEndpoints({
       query: (credentials) => ({
         url: "/auth",
         method: "POST",
-        body: { ...credentials },
+        body: { ...credentials}
       }),
     }),
     refresh: builder.mutation({
@@ -35,12 +35,8 @@ const authApiSlice = apiSlice.injectEndpoints({
         try {
           const { data } = await queryFulfilled;
           console.log(data);
-
-          // eksekusi action logout pada authSlice
-          dispatch(logout());
-
+          dispatch(logout);
           setTimeout(() => {
-            // pembersihan keseluruhan state Store
             dispatch(apiSlice.util.resetApiState());
             window.location.replace("/login");
           }, 250);

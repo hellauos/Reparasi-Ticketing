@@ -1,32 +1,34 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { Switch } from "@headlessui/react";
-import { useGetAllUsersQuery } from "../../api/usersApiSlice";
 import { memo } from "react";
-import { EditUserDrawer } from "./EditUserDrawer";
-import { useUpdateUserMutation } from "../../api/usersApiSlice";
+import {
+    useGetAllTicketsQuery,
+    useUpdateTicketMutation,
+} from "@/api/ticketApiSlice";
+import { EditTicketDrawer } from "./EditTicketDrawer";
 
-const User = ({ userId, buttonRef, onStatusChange }) => {
-    const { user } = useGetAllUsersQuery("usersList", {
+const Ticket = ({ ticketId, buttonRef, onStatusChange }) => {
+    const { ticket } = useGetAllTicketsQuery("ticketsList", {
         selectFromResult: ({ data }) => ({
-            user: data?.entities[userId],
+            ticket: data?.entities[ticketId],
         }),
     });
-    const [updateUser] = useUpdateUserMutation();
+    const [updateTicket] = useUpdateTicketMutation();
 
-    if (!user) return null;
+    if (!ticket) return null;
 
-    const { username, active, roles } = user;
-    const userRolesString = roles.toString().replaceAll(",", ", ");
+    const { title, desc, isFixed, username } = ticket;
 
     const handleStatusChange = async () => {
-        const newStatus = !active;
+        const newStatus = !isFixed;
         try {
-            await updateUser({
-                id: String(user.id),
-                username: String(user.username),
-                roles: user.roles.map(String),
-                active: newStatus,
+            await updateTicket({
+                id: String(ticket.id),
+                title: String(ticket.title),
+                desc: String(ticket.desc),
+                user: String(ticket.user),
+                isFixed: String(newStatus),
             });
 
             if (typeof onStatusChange === "function") {
@@ -41,7 +43,7 @@ const User = ({ userId, buttonRef, onStatusChange }) => {
         }
     };
     return (
-        <tr key={userId}>
+        <tr key={ticketId}>
             <td className="px-6 py-4 whitespace-nowrap">
                 <div className="flex items-center">
                     <div>
@@ -52,11 +54,21 @@ const User = ({ userId, buttonRef, onStatusChange }) => {
                 </div>
             </td>
             <td className="px-6 py-4 whitespace-nowrap">
-                <span className="text-sm text-gray-500">{userRolesString}</span>
+                <div className="flex items-center">
+                    <div>
+                        <div className="text-sm font-medium text-gray-900">
+                            {title}
+                        </div>
+                    </div>
+                </div>
+            </td>
+
+            <td className="px-6 py-4 whitespace-nowrap">
+                <span className="text-sm text-gray-500">{desc}</span>
             </td>
             <td className="px-6 py-4 whitespace-nowrap">
                 <Switch
-                    checked={active}
+                    checked={isFixed}
                     onChange={handleStatusChange}
                     className="group relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-gray-200 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2  data-[checked]:bg-indigo-600"
                 >
@@ -96,12 +108,12 @@ const User = ({ userId, buttonRef, onStatusChange }) => {
             </td>
             <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
                 {/* Edit User Drawer */}
-                <EditUserDrawer selectedUser={user} />
+                <EditTicketDrawer selectedTicket={ticket} />
             </td>
         </tr>
     );
 };
 
-const MemoizedUser = memo(User);
+const MemoizedTicket = memo(Ticket);
 
-export default MemoizedUser;
+export default MemoizedTicket;

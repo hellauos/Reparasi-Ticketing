@@ -3,22 +3,20 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { setCredentials } from "./authSlice";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: "https://reparasi-server.onrender.com",
+  baseUrl: "http://localhost:8080",
   credentials: "include",
   prepareHeaders: (headers, { getState }) => {
-    const bearerToken = getState()?.auth?.accessToken;
-
+    const bearerToken = getState()?.auth?.token;
     if (bearerToken) {
       headers.set("authorization", `Bearer ${bearerToken}`);
     }
-
     return headers;
   },
 });
 
 const baseQueryWithAuth = async (args, api, extraOptions) => {
   let response = await baseQuery(args, api, extraOptions);
-
+console.log("Response: ",response)
   if (response?.error?.status === 403) {
     const refreshResult = await baseQuery("/auth/refresh", api, extraOptions);
 

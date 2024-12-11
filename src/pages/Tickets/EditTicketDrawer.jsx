@@ -3,10 +3,6 @@
 import { useForm } from "react-hook-form";
 
 import {
-    useUpdateUserMutation,
-    useDeleteUserMutation,
-} from "@/api/usersApiSlice";
-import {
     Sheet,
     SheetContent,
     SheetDescription,
@@ -14,43 +10,47 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet";
-import { ROLES } from "@/config/roles";
+import {
+    useDeleteTicketMutation,
+    useUpdateTicketMutation,
+} from "@/api/ticketApiSlice";
 
-export function EditUserDrawer({ selectedUser }) {
+export function EditTicketDrawer({ selectedTicket }) {
     const {
         register,
         handleSubmit,
         reset,
         formState: { errors },
     } = useForm({
-        defaultValues: selectedUser,
+        defaultValues: selectedTicket,
     });
-    const [updateUser, { isLoading, isSuccess, isError, error }] =
-        useUpdateUserMutation();
-    const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
+    const [deleteTicket, { isLoading: isDeleting }] = useDeleteTicketMutation();
+    const [updateTicket, { isLoading, isSuccess, isError, error }] =
+        useUpdateTicketMutation();
 
     const onSubmit = async (payload) => {
         try {
-            await updateUser({
-                ...selectedUser,
-                username: payload.username,
-                roles: payload.roles,
+            await updateTicket({
+                ...selectedTicket,
+                title: payload.title,
+                desc: payload.desc,
+                isFixed: String(selectedTicket.isFixed),
             });
             reset();
             window.location.reload();
-        } catch (err) {
-            console.error("Failed to create user:", err);
+        } catch (error) {
+            console.log("gagal update", error);
+        }
+    };
+    const handleDelete = async () => {
+        try {
+            await deleteTicket({ id: selectedTicket.id });
+            console.log("Tiket deleted successfully");
+        } catch (error) {
+            console.error("gagal melakukan delete", error);
         }
     };
 
-    const handleDelete = async () => {
-        try {
-            await deleteUser({ id: selectedUser.id });
-            console.log("User deleted successfully");
-        } catch (err) {
-            console.error("Failed to delete user:", err);
-        }
-    };
     return (
         <Sheet>
             <SheetTrigger>
@@ -60,14 +60,13 @@ export function EditUserDrawer({ selectedUser }) {
             </SheetTrigger>
             <SheetContent>
                 <SheetHeader>
-                    <SheetTitle>Edit User</SheetTitle>
+                    <SheetTitle>Edit Tiket</SheetTitle>
                     <SheetDescription>
                         edit{" "}
                         <span className="font-bold capitalize">
                             {" "}
-                            {selectedUser.username}
+                            {selectedTicket.title}
                         </span>{" "}
-                        user data
                     </SheetDescription>
                 </SheetHeader>
                 <form
@@ -76,65 +75,41 @@ export function EditUserDrawer({ selectedUser }) {
                 >
                     <div>
                         <label
-                            htmlFor="username"
+                            htmlFor="title"
                             className="block text-sm font-medium text-gray-700"
                         >
-                            Username
+                            Title
                         </label>
                         <input
                             type="text"
-                            id="username"
-                            {...register("username")}
+                            id="title"
+                            {...register("title")}
                             className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                         />
-                        {errors.username && (
+                        {errors.title && (
                             <p className="mt-1 text-sm text-red-600">
-                                {errors.username.message}
+                                {errors.title.message}
                             </p>
                         )}
                     </div>
                     <div>
                         <label
-                            htmlFor="password"
+                            htmlFor="desc"
                             className="block text-sm font-medium text-gray-700"
                         >
-                            Password
+                            Description
                         </label>
                         <input
-                            type="password"
-                            id="password"
-                            {...register("password")}
+                            type="text"
+                            id="desc"
+                            {...register("desc")}
                             className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                         />
-                        {errors.password && (
+                        {errors.desc && (
                             <p className="mt-1 text-sm text-red-600">
-                                {errors.password.message}
+                                {errors.desc.message}
                             </p>
                         )}
-                    </div>
-
-                    {/* roles */}
-                    <div>
-                        <label
-                            htmlFor="role"
-                            className="block text-sm font-medium text-gray-700"
-                        >
-                            Role
-                        </label>
-                        <select
-                            id="roles"
-                            {...register("roles")}
-                            className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                            multiple={true}
-                            size="3"
-                            value={updateUser.roles}
-                        >
-                            {Object.values(ROLES).map((role) => (
-                                <option key={role} value={role}>
-                                    {role}
-                                </option>
-                            ))}
-                        </select>
                     </div>
 
                     {/* Delete */}
@@ -144,13 +119,13 @@ export function EditUserDrawer({ selectedUser }) {
                             disabled={isDeleting}
                             className="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-red-500 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                         >
-                            {isDeleting ? "Deleting..." : "Delete User"}
+                            {isDeleting ? "Deleting..." : "Delete Ticket"}
                         </button>
                         <button
                             type="submit"
                             className="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                         >
-                            Save User
+                            Save Ticket
                         </button>
                     </div>
                 </form>
